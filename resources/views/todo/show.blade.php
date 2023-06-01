@@ -37,7 +37,7 @@
     </div>
     <div>
         @foreach($task->tags as $tag)
-            <button type="button" class="btn btn-secondary py-0">{{ $tag->name }}</button>
+            <button type="button" class="btn btn-secondary py-0 tag-button">{{ $tag->name }}</button>
         @endforeach
     </div>
 </div>

@@ -48,10 +48,10 @@
         </div>
 
         {{-- Tag Filter--}}
-        <form method="get" class="row justify-content-center mb-3">
+        <form action="{{ route('tasks.index') }}" method="get" class="row justify-content-center mb-3" id="tag-filter-form">
             <div class="col-md-8">
                 @csrf
-                <input type="text" class="form-control" id="tag-filter" placeholder="Поиск по тегам">
+                <input type="text" class="form-control" id="tag-filter" name="tags" placeholder="Поиск по тегам">
             </div>
         </form>
 
@@ -62,9 +62,11 @@
                 <div class="card">
                     <div class="card-header" id="tasks-header">TODO List</div>
 
-                    @foreach($tasks as $task)
-                        @include('todo.show')
-                    @endforeach
+                    <div id="tasks-list">
+                        @foreach($tasks as $task)
+                            @include('todo.show')
+                        @endforeach
+                    </div>
 
                 </div>
             </div>

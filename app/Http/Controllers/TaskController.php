@@ -15,9 +15,30 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $this->tags = array_diff(explode(' ', $request->tags), ['']);
+
+        $user = \Auth::user();
+
+        // Если строка поиска пустая, выводим всё
+        if (!$this->tags) {
+            $tasks = Task::where('user_id', '=', $user->id)
+                ->with('tags')
+                ->orderBy('created_at', 'desc')->get();
+        }
+        // Иначе выводим совпадения
+        else {
+            $tasks = Task::where('user_id', '=', $user->id)
+                ->with('tags')
+                ->whereHas('tags', function($query) {
+                    $query->whereIn('name', $this->tags);
+                })
+                ->orderBy('created_at', 'desc')->get();
+        }
+
+        // Возвращаем отфильтрованные задачи фронтенду
+        return view('todo.filter', compact('tasks'))->render();
     }
 
     /**

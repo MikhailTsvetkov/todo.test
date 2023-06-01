@@ -85,6 +85,15 @@ $(function(){
         $('#image-edit-'+id).val('');
     });
 
+    body.on('input', '#tag-filter', function(){
+        let form = $('#tag-filter-form');
+        let action = form.prop('action');
+        let formData = form.serialize();
+        $.get(action, formData, function(respData) {
+            $('#tasks-list').html(respData);
+        });
+    });
+
 });
 
 window.remove_task = function(id) {

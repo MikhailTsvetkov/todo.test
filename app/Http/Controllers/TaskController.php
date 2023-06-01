@@ -20,22 +20,22 @@ class TaskController extends Controller
         $this->tags = array_diff(explode(' ', $request->tags), ['']);
 
         $user = \Auth::user();
+        $query = Task::where('user_id', '=', $user->id)
+            ->with('tags')
+            ->orderBy('created_at', 'desc');
 
-        // Если строка поиска пустая, выводим всё
-        if (!$this->tags) {
-            $tasks = Task::where('user_id', '=', $user->id)
-                ->with('tags')
-                ->orderBy('created_at', 'desc')->get();
+        if ($this->tags) {
+            $query->whereHas('tags', function($query) {
+                $query->whereIn('name', $this->tags);
+            });
         }
-        // Иначе выводим совпадения
-        else {
-            $tasks = Task::where('user_id', '=', $user->id)
-                ->with('tags')
-                ->whereHas('tags', function($query) {
-                    $query->whereIn('name', $this->tags);
-                })
-                ->orderBy('created_at', 'desc')->get();
+
+        if ($request->search) {
+            $query->where('title', 'like', '%'.$request->search.'%')
+                ->where('description', 'like', '%'.$request->search.'%');
         }
+
+        $tasks = $query->get();
 
         // Возвращаем отфильтрованные задачи фронтенду
         return view('todo.filter', compact('tasks'))->render();

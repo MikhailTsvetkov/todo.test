@@ -85,7 +85,7 @@ $(function(){
         $('#image-edit-'+id).val('');
     });
 
-    body.on('input', '#tag-filter', function(){
+    body.on('input', '#search, #tag-filter', function(){
         let form = $('#tag-filter-form');
         let action = form.prop('action');
         let formData = form.serialize();

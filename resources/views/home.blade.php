@@ -51,6 +51,7 @@
         <form action="{{ route('tasks.index') }}" method="get" class="row justify-content-center mb-3" id="tag-filter-form">
             <div class="col-md-8">
                 @csrf
+                <input type="text" class="form-control mb-2" id="search" name="search" placeholder="Поиск по задачам">
                 <input type="text" class="form-control" id="tag-filter" name="tags" placeholder="Поиск по тегам">
             </div>
         </form>

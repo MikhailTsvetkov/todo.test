@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +24,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $user = \Auth::user();
+        $tasks = Task::with('tags')->where("user_id", "=", $user->id)->orderBy('id', 'desc')->get();
+        return view('home', compact('tasks'));
     }
 }

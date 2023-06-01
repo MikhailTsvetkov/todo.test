@@ -7,7 +7,3 @@ const modules = import.meta.glob([
 ],{
     query: { w: '150', h: '150', format: 'webp' }
 });
-
-$('body').on('click', '#show-todo-add-form', function(){
-    $('#todo-add-form').slideDown();
-});

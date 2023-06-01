@@ -1,0 +1,15 @@
+html, body {
+    background: #6c757d;
+}
+
+.image-wrapper {
+    width: 150px;
+    height: 150px;
+}
+
+.img-buttons {
+    color: #fff;
+    left: 110px;
+    top: 5px;
+    width: 37px;
+}

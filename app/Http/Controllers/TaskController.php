@@ -182,10 +182,14 @@ class TaskController extends Controller
     public function destroy(string $id)
     {
         $user = \Auth::user();
-        Task::where('id', '=', $id)
+        $task = Task::where('id', '=', $id)
             ->where('user_id', '=', $user->id)
-            ->with('tags')
-            ->delete();
+            ->with('tags')->first();
+        if ($task->image) {
+            Storage::disk('public')->delete($task->image);
+            Storage::disk('public')->delete($task->image_orig);
+        }
+        $task->delete();
         return response()->json([
             'status' => 'success'
         ]);

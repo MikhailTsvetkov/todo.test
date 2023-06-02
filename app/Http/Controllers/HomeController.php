@@ -25,7 +25,9 @@ class HomeController extends Controller
     public function index()
     {
         $user = \Auth::user();
-        $tasks = Task::with('tags')->where("user_id", "=", $user->id)->orderBy('id', 'desc')->get();
+        $tasks = Task::with('tags')
+            ->where("user_id", "=", $user->id)->orderBy('id', 'desc')
+            ->paginate(10);
         return view('home', compact('tasks'));
     }
 }

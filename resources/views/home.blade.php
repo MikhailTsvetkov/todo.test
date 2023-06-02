@@ -68,6 +68,7 @@
                             @include('todo.show')
                         @endforeach
                     </div>
+                    {{ $tasks->links() }}
 
                 </div>
             </div>

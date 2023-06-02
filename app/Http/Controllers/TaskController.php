@@ -20,19 +20,24 @@ class TaskController extends Controller
         $this->tags = array_diff(explode(' ', $request->tags), ['']);
 
         $user = \Auth::user();
-        $query = Task::where('user_id', '=', $user->id)
-            ->with('tags')
+
+        $query = Task::with('tags')
+            ->where('user_id', '=', $user->id)
             ->orderBy('created_at', 'desc');
 
-        if ($this->tags) {
-            $query->whereHas('tags', function($query) {
-                $query->whereIn('name', $this->tags);
+        // Поиск по контенту
+        if ($request->search) {
+            $query->where(function($q) use ($request) {
+                    $q->where('title', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%');
             });
         }
 
-        if ($request->search) {
-            $query->where('title', 'like', '%'.$request->search.'%')
-                ->where('description', 'like', '%'.$request->search.'%');
+        // Поиск по тегам
+        if ($this->tags) {
+            $query->whereHas('tags', function($q) {
+                $q->whereIn('name', $this->tags);
+            });
         }
 
         $tasks = $query->get();
@@ -73,16 +78,18 @@ class TaskController extends Controller
         // Создаем задачу
         $task = Task::create([
             'user_id' => \Auth::user()->id,
-            'title' => $request->title,
-            'description' => $request->description,
+            'title' => strip_tags($request->title),
+            'description' => nl2br(strip_tags($request->description)),
             'image' => $image[0] ?? null,
             'image_orig' => $image[1] ?? null,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         // Добавляем теги
         $request_tags = array_diff(explode(' ', $request->tags), ['']);
         foreach($request_tags as $request_tag) {
-            $task->tags()->firstOrCreate(['name' => $request_tag]);
+            $task->tags()->firstOrCreate(['name' => strip_tags($request_tag)]);
         }
 
         // Возвращаем новую задачу фронтенду
@@ -137,10 +144,11 @@ class TaskController extends Controller
             ->with('tags')
             ->first();
 
-        // Обновление заголовка и описание
+        // Обновление заголовка и описания
         $update_data = [
-            'title' => $request->title,
-            'description' => $request->description,
+            'title' => strip_tags($request->title),
+            'description' => nl2br(strip_tags($request->description)),
+            'updated_at' => now(),
         ];
 
         // Проверяем, нужно ли обновить изображение

@@ -20,6 +20,12 @@ npm install
 composer install
 ```
 
+#### Генерация ключа
+
+```
+php artisan key:generate
+```
+
 #### Выполнение миграций
 
 ```
